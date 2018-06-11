@@ -163,7 +163,7 @@ class UpdateApp extends Command
     protected function optimize()
     {
         if (!$this->laravel->environment('local')) {
-            $this->call('optimize', ['--force' => true]);
+            //$this->call('optimize', ['--force' => true]);
             $this->call('config:cache');
             $this->call('route:cache');
         }

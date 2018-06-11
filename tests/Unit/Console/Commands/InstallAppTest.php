@@ -123,12 +123,12 @@ class InstallAppTest extends TestCase
             return true;
         }), m::any());
 
-        $optimize = m::mock(OptimizeCommand::class);
-        $optimize->shouldReceive('run')->with(m::on(function (ArrayInput $arg) {
-            $this->assertTrue($arg->getParameterOption('--force'));
-
-            return true;
-        }), m::any());
+//        $optimize = m::mock(OptimizeCommand::class);
+//        $optimize->shouldReceive('run')->with(m::on(function (ArrayInput $arg) {
+//            $this->assertTrue($arg->getParameterOption('--force'));
+//
+//            return true;
+//        }), m::any());
 
         $this->console->shouldReceive('find')->times(2)->with('clear-compiled')->andReturn($command);
         $this->console->shouldReceive('find')->times(2)->with('cache:clear')->andReturn($command);
@@ -136,7 +136,7 @@ class InstallAppTest extends TestCase
         $this->console->shouldReceive('find')->times(2)->with('config:clear')->andReturn($command);
         $this->console->shouldReceive('find')->times(2)->with('view:clear')->andReturn($command);
         $this->console->shouldReceive('find')->once()->with('key:generate')->andReturn($key);
-        $this->console->shouldReceive('find')->once()->with('optimize')->andReturn($optimize);
+        //$this->console->shouldReceive('find')->once()->with('optimize')->andReturn($optimize);
         $this->console->shouldReceive('find')->once()->with('config:cache')->andReturn($command);
         $this->console->shouldReceive('find')->once()->with('route:cache')->andReturn($command);
 

@@ -276,13 +276,13 @@ class UpdateAppTest extends TestCase
             return true;
         }), m::any());
 
-        $optimize = m::mock(OptimizeCommand::class);
-        $optimize->shouldReceive('run')->with(m::on(function (ArrayInput $arg) {
-            // FIXME: Is there a better way to do this?
-            $this->assertTrue($arg->getParameterOption('--force'));
-
-            return true;
-        }), m::any());
+//        $optimize = m::mock(OptimizeCommand::class);
+//        $optimize->shouldReceive('run')->with(m::on(function (ArrayInput $arg) {
+//            // FIXME: Is there a better way to do this?
+//            $this->assertTrue($arg->getParameterOption('--force'));
+//
+//            return true;
+//        }), m::any());
 
         $backup = m::mock(DbBackupCommand::class);
         $backup->shouldReceive('run')->with(m::on(function (ArrayInput $arg) {
@@ -304,7 +304,7 @@ class UpdateAppTest extends TestCase
         $this->console->shouldReceive('find')->with('config:clear')->andReturn($command);
         $this->console->shouldReceive('find')->with('view:clear')->andReturn($command);
         $this->console->shouldReceive('find')->with('migrate')->andReturn($migrate);
-        $this->console->shouldReceive('find')->with('optimize')->andReturn($optimize);
+//        $this->console->shouldReceive('find')->with('optimize')->andReturn($optimize);
         $this->console->shouldReceive('find')->with('config:cache')->andReturn($command);
         $this->console->shouldReceive('find')->with('route:cache')->andReturn($command);
         $this->console->shouldReceive('find')->with('queue:flush')->andReturn($command);
