@@ -39,3 +39,7 @@ See the [wiki](https://github.com/REBELinBLUE/deployer/wiki) for information on 
 
 Deployer is licensed under [The MIT License (MIT)](/LICENSE.md).
 
+## Why this fork
+
+This fork was originally made to make pull requests to the original repository. Some of my contributions have been merged but REBELinBLUE seems too buzy to create the new release. So I decided to move my way. 
+
