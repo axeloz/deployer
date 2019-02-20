@@ -109,6 +109,7 @@ class InstallAppTest extends TestCase
     {
         // FIXME: Clean up, lots of duplication
 
+
         $this->config->shouldReceive('get')->with('app.key')->andReturn(false);
         $this->requirements->shouldReceive('check')->with(m::type(InstallApp::class))->andReturn(true);
 
@@ -140,9 +141,11 @@ class InstallAppTest extends TestCase
         $expectedHipchatUrl = 'http://hooks.hipchat.com';
         $expectedFrom       = 'deployer@example.com';
         $expectedAppUrl     = 'https://localhost';
+        $expectedSocketSsl  = 'true';
         $expectedKey        = '/var/ssl/private-key';
         $expectedCert       = '/var/ssl/cert';
         $expectedCa         = '/var/ssl/ca';
+
 
         $expectedConfig = [
             'db' => [
@@ -155,6 +158,7 @@ class InstallAppTest extends TestCase
             ],
             'socket'   => [
                 'url'              => $expectedAppUrl . ':6001',
+                'ssl'              => $expectedSocketSsl,
                 'ssl_key_file'     => $expectedKey,
                 'ssl_key_password' => 'key-password',
                 'ssl_cert_file'    => $expectedCert,
@@ -272,10 +276,11 @@ class InstallAppTest extends TestCase
             'Europe',
             'London', // FIXME: Need to test this second prompt doesn't happen if UTC is selected
             $expectedAppUrl,
-            $expectedKey, // FIXME: Need to set the key isn't asked for if not https
-            'key-password',
-            $expectedCert,
-            $expectedCa,
+            'ssl' => $expectedSocketSsl,
+            'ssl_key_file'  => $expectedKey, // FIXME: Need to set the key isn't asked for if not https
+            'ssl_key_password' => 'key-password',
+            'ssl_cert_file' => $expectedCert,
+            'ssl_ca_file' => $expectedCa,
             'lang' => 'en',
 
             // Hipchat
@@ -309,6 +314,14 @@ class InstallAppTest extends TestCase
             unset($input['lang']);
         }
 
+        // If socket SSL disabled, SSL settings are not required
+        if ($expectedSocketSsl == 'false') {
+            unset($input['ssl_key_file']);
+            unset($input['ssl_key_password']);
+            unset($input['ssl_cert_file']);
+            unset($input['ssl_ca_file']);
+        }
+
         // If the driver is SQLite the remaining details are not required
         if ($dbDriver === 'sqlite') {
             unset($input['db_host']);
@@ -319,8 +332,8 @@ class InstallAppTest extends TestCase
         }
 
         $input = array_values($input);
-
         $tester = $this->runCommand($this->laravel, $input);
+
         $output = $tester->getDisplay();
 
         $this->assertContains('a-line-of-output', $output);

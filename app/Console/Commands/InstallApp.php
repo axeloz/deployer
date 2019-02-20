@@ -279,11 +279,17 @@ class InstallApp extends Command
             unset($config['app']['socket']);
         }
 
-        if (isset($config['app']['ssl'])) {
-            foreach ($config['app']['ssl'] as $key => $value) {
-                $config['socket']['ssl_' . $key] = $value;
-            }
+        if (isset($config['app']['socket_ssl'])) {
+            $config['socket']['ssl'] = $config['app']['socket_ssl'];
+            unset($config['app']['socket_ssl']);
+        }
 
+        if (isset($config['app']['ssl'])) {
+            if (isset($config['socket']['ssl']) && $config['socket']['ssl'] == 'true') {
+                foreach ($config['app']['ssl'] as $key => $value) {
+                    $config['socket']['ssl_' . $key] = $value;
+                }
+            }
             unset($config['app']['ssl']);
         }
 
@@ -460,6 +466,8 @@ class InstallApp extends Command
 
         $socket = $this->askAndValidate('Socket URL', [], $url_callback, $url);
 
+        $socket_ssl = $this->choice('Should the socket use SSL?', ['true', 'false'], 1);
+
         // If the URL doesn't have : in twice (the first is in the protocol, the second for the port)
         if (substr_count($socket, ':') === 1) {
             // Check if running on nginx, and if not then add it
@@ -494,8 +502,8 @@ class InstallApp extends Command
             return $answer;
         };
 
-        $ssl = null;
-        if (substr($socket, 0, 5) === 'https') {
+        $ssl = [];
+        if ($socket_ssl == 'true') {
             $ssl = [
                 'key_file'     => $this->askAndValidate('SSL key file', [], $path_callback),
                 'key_password' => $this->askSecretAndValidate('SSL key password', [], function ($answer) {
@@ -515,11 +523,12 @@ class InstallApp extends Command
         }
 
         return [
-            'url'      => $url,
-            'timezone' => $region,
-            'socket'   => $socket,
-            'ssl'      => $ssl,
-            'locale'   => $locale,
+            'url'           => $url,
+            'timezone'      => $region,
+            'socket'        => $socket,
+            'socket_ssl'    => $socket_ssl,
+            'ssl'           => $ssl,
+            'locale'        => $locale,
         ];
     }
 
